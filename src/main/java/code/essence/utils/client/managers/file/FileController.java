@@ -1,0 +1,163 @@
+package code.essence.utils.client.managers.file;
+
+import code.essence.utils.client.logs.Logger;
+import code.essence.utils.theme.ThemeManager;
+import lombok.AccessLevel;
+import lombok.experimental.FieldDefaults;
+import code.essence.utils.client.managers.file.exception.FileLoadException;
+import code.essence.utils.client.managers.file.exception.FileSaveException;
+import code.essence.utils.client.managers.file.impl.ModuleFile;
+
+import java.io.File;
+import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+public class FileController {
+    List<ClientFile> clientFiles;
+    File directory, moduleConfigDirectory;
+    ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+
+    public FileController(List<ClientFile> clientFiles, File directory, File moduleConfigDirectory) {
+        this.clientFiles = clientFiles;
+        this.directory = directory;
+        this.moduleConfigDirectory = moduleConfigDirectory;
+        startAutoSave();
+    }
+
+    public void startAutoSave() {
+        Logger.info("Auto-save system started!");
+        scheduler.scheduleAtFixedRate(() -> {
+            try {
+                Logger.info("Saving with auto-save.");
+                saveFiles();
+            } catch (FileSaveException e) {
+                Logger.error("Failed to auto-save files: " + e.getMessage());
+            }
+        }, 1, 1, TimeUnit.MINUTES);
+    }
+
+    public void stopAutoSave() {
+        Logger.info("Auto-save shutdown!");
+        scheduler.shutdown();
+        try {
+            if (!scheduler.awaitTermination(1, TimeUnit.MINUTES)) {
+                scheduler.shutdownNow();
+            }
+        } catch (InterruptedException e) {
+            scheduler.shutdownNow();
+        }
+    }
+
+    public void saveFiles() throws FileSaveException {
+        if (clientFiles.isEmpty()) {
+            Logger.warn("No files to save from directory: " + directory.getPath());
+            return;
+        }
+
+        for (ClientFile clientFile : clientFiles) {
+            if (clientFile instanceof ModuleFile) {
+                continue;
+            }
+
+            try {
+                clientFile.saveToFile(directory);
+                Logger.info("Successfully saved file: " + clientFile.getName() + " to " + directory.getPath());
+            } catch (FileSaveException e) {
+                throw new FileSaveException("Failed to save file: " + clientFile.getName(), e);
+            }
+        }
+
+        try {
+            saveFile("default.json");
+        } catch (FileSaveException e) {
+            Logger.error("Failed to auto-save default config: " + e.getMessage());
+        }
+
+        try {
+            ThemeManager.saveTheme("default");
+            File themeDir = ThemeManager.getThemeDir();
+            Logger.info("Successfully saved file: default.json to " + themeDir.getPath());
+        } catch (Exception e) {
+            Logger.error("Failed to auto-save default theme: " + e.getMessage());
+        }
+    }
+
+    public void loadFiles() throws FileLoadException {
+        if (clientFiles.isEmpty()) {
+            Logger.warn("No files to load from directory: " + directory.getPath());
+            return;
+        }
+
+        for (ClientFile clientFile : clientFiles) {
+            try {
+                
+                if (clientFile instanceof ModuleFile) {
+                    continue;
+                }
+                clientFile.loadFromFile(directory);
+                Logger.info("Successfully loaded file: " + clientFile.getName() + " from " + directory.getPath());
+            } catch (FileLoadException e) {
+                
+                Logger.warn("Failed to load file: " + clientFile.getName() + " - " + e.getMessage());
+            }
+        }
+    }
+
+    public void saveFile(String fileName) throws FileSaveException {
+        
+        for (ClientFile clientFile : clientFiles) {
+            if (clientFile instanceof ModuleFile) {
+                try {
+                    clientFile.saveToFile(moduleConfigDirectory, fileName);
+                    Logger.info("Successfully saved file: " + fileName + " to " + moduleConfigDirectory.getPath());
+                } catch (FileSaveException e) {
+                    throw new FileSaveException("Failed to save file: " + fileName, e);
+                }
+            }
+        }
+
+        
+        for (ClientFile clientFile : clientFiles) {
+            if (!(clientFile instanceof ModuleFile)) {
+                try {
+                    clientFile.saveToFile(directory);
+                    Logger.info("Successfully saved file: " + clientFile.getName() + " to " + directory.getPath());
+                } catch (FileSaveException e) {
+                    Logger.warn("Failed to save file: " + clientFile.getName() + " - " + e.getMessage());
+                }
+            }
+        }
+    }
+
+    public void loadFile(String fileName) throws FileLoadException {
+        
+        
+        for (ClientFile clientFile : clientFiles) {
+            if (clientFile instanceof ModuleFile) {
+                try {
+                    clientFile.loadFromFile(moduleConfigDirectory, fileName);
+                    Logger.info("Successfully loaded file: " + fileName + " from " + moduleConfigDirectory.getPath());
+                } catch (FileLoadException e) {
+                    throw new FileLoadException("Failed to load file: " + fileName, e);
+                }
+            }
+        }
+    }
+
+    public void saveFile(Class<? extends ClientFile> fileClass) {
+        clientFiles.stream()
+                .filter(fileClass::isInstance)
+                .findFirst()
+                .ifPresent(file -> {
+                    try {
+                        file.saveToFile(directory);
+                        Logger.info("Successfully saved file on-demand: " + file.getName());
+                    } catch (FileSaveException e) {
+                        Logger.error("Failed to save file on-demand: " + file.getName(), e);
+                    }
+                });
+    }
+}

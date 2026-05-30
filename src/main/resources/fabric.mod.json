@@ -1,0 +1,31 @@
+{
+  "accessWidener": "accesswidener",
+  "schemaVersion": 1,
+  "id": "essence",
+  "version": "1.0",
+  "icon": "assets/minecraft/icon.png",
+  "name": "essence",
+  "description": "Essence Client",
+  "authors": [
+    "chipsina"
+  ],
+  "contact": {
+    "website": "https://rockstar.pub",
+    "repo": "none"
+  },
+  "license": "All-Rights-Reserved",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "code.essence.Essence"
+    ]
+  },
+  "mixins": [
+    "mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.16.8",
+    "fabric": "*",
+    "minecraft": "~1.21.4"
+  }
+}
