@@ -1,0 +1,542 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Eclipse — Лист направлений</title>
+<link rel="stylesheet" href="sheet.css">
+<link rel="stylesheet" href="dir-bench.css">
+<link rel="stylesheet" href="dir-norm.css">
+</head>
+<body>
+
+<header class="sheet-head">
+  <div>
+    <h1>Лист направлений · GUI и HUD</h1>
+    <p>Три независимых визуальных направления из трёх несвязанных референсных миров. Содержимое настоящее — модули, настройки и подписи взяты из кода клиента. Мир под интерфейсом сгенерирован ярким намеренно: HUD обязан читаться над травой, небом и снегом, а не над собственным тёмным фоном.</p>
+  </div>
+  <div class="sheet-controls">
+    <button type="button" data-zoom="1" aria-pressed="true">1:1</button>
+    <button type="button" data-zoom="fit" aria-pressed="false">Вписать</button>
+  </div>
+</header>
+
+<!-- ══════════════════════════ 01 · BENCH READOUT ══════════════════════════ -->
+
+<section class="direction">
+  <header>
+    <div class="direction-index">01</div>
+    <div>
+      <h2 class="direction-title">Bench Readout</h2>
+      <p class="direction-world">Tektronix 2465 · канальная полоса SSL 4000 · Fluke 87V</p>
+      <p class="direction-lede">Панель прибора, а не страница. Три отсека без зазоров, разделённые швами в 1px — как полоса микшера делится на секции, поэтому глаз читает колонки функций, а не сетку контейнеров. Глубина — фаска, не размытие. Один натриевый амбер, и только на том, что под напряжением или меняется сейчас.</p>
+    </div>
+    <dl class="direction-facts">
+      <div>
+        <dt>Палитра</dt>
+        <dd><span class="swatches"><span style="background:#0C1013" data-hex="0C1013"></span><span style="background:#161B1F" data-hex="161B1F"></span><span style="background:#1C2228" data-hex="1C2228"></span><span style="background:#262D33" data-hex="262D33"></span><span style="background:#7E8B95" data-hex="7E8B95"></span><span style="background:#ECA042" data-hex="ECA042"></span></span></dd>
+      </div>
+      <div>
+        <dt>Типографика</dt>
+        <dd>Fira Sans в трёх ширинах — одна гарнитура на всю панель, как Tektronix печатал один шрифт разной ширины по безелю. IBM Plex Mono только на цифрах.</dd>
+      </div>
+      <div>
+        <dt>Формы и границы</dt>
+        <dd>Радиусы 0/1/2/3, дальше нет. Только 1px, никаких полупиксельных линий. Слайдер — фейдер: паз 3px, штрихи шкалы под пазом, колпачок 4×14 с индексной линией.</dd>
+      </div>
+      <div>
+        <dt>Подпись направления</dt>
+        <dd>Рейка отсчёта: живой след 1px, метрика которого зависит от выбранной категории. Величина, которую настраиваешь, бежит в одной рамке со слайдером.</dd>
+      </div>
+    </dl>
+  </header>
+
+  <div class="stage-frame" data-fit="false">
+    <div class="stage bench" data-stage>
+      <canvas class="world" width="1600" height="900" data-seed="11"></canvas>
+
+      <!-- HUD -->
+      <div class="hud bench-hud-mark scrim-left">Eclipse<u>2.4.1</u></div>
+
+      <div class="hud bench-arraylist">
+        <div>KillAura<u>AUR</u></div>
+        <div>Velocity</div>
+        <div>AutoTotem</div>
+        <div>Speed<u>GRIM</u></div>
+        <div>Esp</div>
+        <div>NameTags</div>
+      </div>
+
+      <div class="hud bench-target">
+        <header><b>mitsurugi_</b><i>14.5</i></header>
+        <div class="hp"><div style="width:72%"></div></div>
+        <footer>
+          <s style="--h:88%"></s><s style="--h:54%"></s><s style="--h:100%"></s><s style="--h:31%"></s>
+          <em>2.4 бл</em>
+        </footer>
+      </div>
+
+      <div class="hud bench-potions scrim-left">
+        <div><s></s>Сила II<i>1:42</i></div>
+        <div data-low="true"><s></s>Скорость II<i>0:18</i></div>
+      </div>
+
+      <div class="hud bench-telemetry scrim-left">
+        <div><b>FPS</b><i>243</i></div>
+        <div><b>PING</b><i>28<u>мс</u></i></div>
+        <div><b>CPS</b><i>11</i></div>
+      </div>
+
+      <div class="hud bench-coords scrim-left">
+        <div><b>X</b><i>−1 842.31</i></div>
+        <div><b>Y</b><i>71.00</i></div>
+        <div><b>Z</b><i>4 066.75</i></div>
+      </div>
+
+      <div class="hud bench-armor">
+        <div data-low="false"><i>84</i><s style="--f:84%"></s></div>
+        <div data-low="false"><i>91</i><s style="--f:91%"></s></div>
+        <div data-low="true"><i>22</i><s style="--f:22%"></s></div>
+        <div data-low="false"><i>67</i><s style="--f:67%"></s></div>
+      </div>
+
+      <div class="hud bench-keys">
+        <span class="w" data-down="true">W</span>
+        <span class="a">A</span><span class="s" data-down="true">S</span><span class="d">D</span>
+        <span class="wide">ПРБ</span>
+      </div>
+
+      <!-- GUI -->
+      <div class="bench-window">
+        <div class="bench-readout">
+          <div class="bench-wordmark">Eclipse</div>
+          <div class="bench-trace">
+            <canvas width="746" height="30" data-trace></canvas>
+            <div class="bench-cells">
+              <div class="bench-cell" style="width:86px"><b>FPS</b><i>243</i></div>
+              <div class="bench-cell" style="width:92px"><b>PING</b><i>28<u>мс</u></i></div>
+              <div class="bench-cell" style="width:72px"><b>CPS</b><i>11</i></div>
+              <div class="bench-cell" style="width:86px"><b>BPS</b><i>5.42</i></div>
+              <div class="bench-cell" style="width:72px"><b>TPS</b><i>19.8</i></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bench-body">
+          <div class="bench-bay-a">
+            <div class="bench-category" aria-selected="true">
+              <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.25"><circle cx="6" cy="6" r="4"/><path d="M6 0v3M6 9v3M0 6h3M9 6h3"/></svg>
+              <b>Бой</b><i>08</i>
+            </div>
+            <div class="bench-category">
+              <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.25"><path d="M2 7l4-3 4 3M2 10l4-3 4 3"/></svg>
+              <b>Движение</b><i>05</i>
+            </div>
+            <div class="bench-category">
+              <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.25"><circle cx="6" cy="3.2" r="2"/><path d="M2 11v-1.6c0-1.3 1.8-2.2 4-2.2s4 .9 4 2.2V11"/></svg>
+              <b>Игрок</b><i>03</i>
+            </div>
+            <div class="bench-category">
+              <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.25"><circle cx="6" cy="6" r="4.2"/><path d="M6 1.8v8.4M2.4 3.9l7.2 4.2M2.4 8.1l7.2-4.2"/></svg>
+              <b>Отрисовка</b><i>07</i>
+            </div>
+            <div class="bench-category">
+              <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.25"><path d="M1 7.5h10M3 4.5h6"/></svg>
+              <b>Мир</b><i>02</i>
+            </div>
+            <div class="bench-category">
+              <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.25"><path d="M3.2 3.2h.01M8.8 3.2h.01M3.2 8.8h.01M8.8 8.8h.01" stroke-width="2"/></svg>
+              <b>Прочее</b><i>09</i>
+            </div>
+
+            <div class="bench-config-head"><span class="legend-caps">Конфиг</span></div>
+            <div class="bench-profile" aria-current="true">hvh_main<em>*</em></div>
+            <div class="bench-profile">grim_bypass</div>
+            <div class="bench-profile">holyworld</div>
+            <div class="bench-profile">legit</div>
+            <div class="bench-actions"><button type="button">Загрузить</button><button type="button">Сохранить</button></div>
+          </div>
+
+          <div class="bench-bay-b">
+            <div class="bench-search">
+              <svg viewBox="0 0 11 11" fill="none" stroke="currentColor" stroke-width="1.25"><circle cx="4.4" cy="4.4" r="3.2"/><path d="M6.9 6.9L10 10"/></svg>
+              <span>Поиск модуля</span><u>58</u>
+            </div>
+            <div class="bench-modules">
+              <div class="bench-module" data-state="on"><em class="bench-lamp"></em><b>KillAura</b><i>aur</i><s class="dot"></s></div>
+              <div class="bench-module" data-state="on"><em class="bench-lamp"></em><b>Velocity</b><i>vel</i><s class="dot"></s></div>
+              <div class="bench-module" data-state="on"><em class="bench-lamp"></em><b>AutoTotem</b><i>tot</i><s class="dot"></s></div>
+              <div class="bench-module" data-state="bound"><em class="bench-lamp"></em><b>Criticals</b><i>crt</i><s class="dot"></s></div>
+              <div class="bench-module" data-state="off"><em class="bench-lamp"></em><b>HitBox</b><i>hbx</i><s class="dot"></s></div>
+              <div class="bench-module" data-state="on"><em class="bench-lamp"></em><b>AutoSwap</b><i>swp</i><s class="dot"></s></div>
+              <div class="bench-module" data-state="off"><em class="bench-lamp"></em><b>TriggerBot</b><i>trg</i><s class="dot"></s></div>
+              <div class="bench-module" data-state="off"><em class="bench-lamp"></em><b>AntiBot</b><i>abt</i><s class="dot"></s></div>
+              <div class="bench-module" data-state="bound"><em class="bench-lamp"></em><b>AutoDodge</b><i>ddg</i><s class="dot"></s></div>
+              <div class="bench-module" data-state="off"><em class="bench-lamp"></em><b>TargetPearl</b><i>prl</i><s class="dot"></s></div>
+              <div class="bench-module" data-state="off"><em class="bench-lamp"></em><b>ShiftTap</b><i>sht</i><s class="dot"></s></div>
+              <div class="bench-module" data-state="on"><em class="bench-lamp"></em><b>NoFriendDamage</b><i>nfd</i><s class="dot"></s></div>
+              <div class="bench-module" data-state="off"><em class="bench-lamp"></em><b>AutoArmor</b><i>arm</i><s class="dot"></s></div>
+              <div class="bench-scroll"><div></div></div>
+            </div>
+          </div>
+
+          <div class="bench-bay-c">
+            <div class="bench-settings-head">
+              <h3>KillAura</h3>
+              <div class="bench-keycap" data-listening="true">R</div>
+              <em class="bench-master"></em>
+            </div>
+            <div class="bench-rows">
+              <div class="bench-row">
+                <label>Наводка</label>
+                <div class="bench-dropdown"><span>Плавная</span><s class="bench-tri"></s></div>
+              </div>
+              <div class="bench-row">
+                <label>Тип таргета</label>
+                <div class="bench-dropdown"><span>Игроки, Друзья</span><s class="bench-tri"></s></div>
+              </div>
+              <div class="bench-row">
+                <label>Дистанция удара</label>
+                <div class="bench-slider" data-pct="58" data-lo="0" data-hi="6">
+                  <div class="track"></div><div class="fill"></div>
+                  <span class="tick" style="left:0"></span><span class="tick" style="left:25%"></span><span class="tick" style="left:50%"></span><span class="tick" style="left:75%"></span><span class="tick" style="left:calc(100% - 1px)"></span>
+                  <div class="cap"></div><em class="min">0</em><em class="max">6</em>
+                </div>
+                <div class="bench-value">3.40<u>бл</u></div>
+              </div>
+              <div class="bench-row">
+                <label>Дистанция поиска</label>
+                <div class="bench-slider" data-pct="74" data-lo="0" data-hi="8">
+                  <div class="track"></div><div class="fill"></div>
+                  <span class="tick" style="left:0"></span><span class="tick" style="left:25%"></span><span class="tick" style="left:50%"></span><span class="tick" style="left:75%"></span><span class="tick" style="left:calc(100% - 1px)"></span>
+                  <div class="cap"></div><em class="min">0</em><em class="max">8</em>
+                </div>
+                <div class="bench-value">5.92<u>бл</u></div>
+              </div>
+              <div class="bench-row">
+                <label>Коррекция</label>
+                <div class="bench-slider" data-pct="31" data-lo="0" data-hi="40">
+                  <div class="track"></div><div class="fill"></div>
+                  <span class="tick" style="left:0"></span><span class="tick" style="left:25%"></span><span class="tick" style="left:50%"></span><span class="tick" style="left:75%"></span><span class="tick" style="left:calc(100% - 1px)"></span>
+                  <div class="cap"></div><em class="min">0</em><em class="max">40</em>
+                </div>
+                <div class="bench-value">12.4<u>мс</u></div>
+              </div>
+
+              <div class="bench-group"><b>Приоритет цели</b><hr></div>
+              <div class="bench-row"><label>Игроки</label><div class="bench-check" data-on="true"></div></div>
+              <div class="bench-row"><label>Мобы</label><div class="bench-check" data-on="false"></div></div>
+              <div class="bench-row"><label>Животные</label><div class="bench-check" data-on="false"></div></div>
+
+              <div class="bench-group"><b>Отключение</b><hr></div>
+              <div class="bench-row"><label>Только криты</label><div class="bench-check" data-on="true"></div></div>
+              <div class="bench-row"><label>Игнорировать стены</label><div class="bench-check" data-on="false"></div></div>
+              <div class="bench-row"><label>Синхронизировать с ТПС</label><div class="bench-check" data-on="true"></div></div>
+              <div class="bench-row">
+                <label>Цвет трейса</label>
+                <div class="bench-chips"><i style="background:#ECA042"></i><i style="background:#E8EEF1"></i><i style="background:#D96450"></i><i style="background:#7E8B95"></i></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bench-status">
+          <span>RSHIFT — меню</span>
+          <span>hvh_main<em>*</em></span>
+          <span class="spacer"></span>
+          <span>14/58</span>
+          <span>b2471 · 1.21.4</span>
+        </div>
+      </div>
+
+      <div class="stage-caption">01 · Bench Readout — 1600×900</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════ 02 · NORMBLATT ══════════════════════════ -->
+
+<section class="direction">
+  <header>
+    <div class="direction-index">02</div>
+    <div>
+      <h2 class="direction-title">Normblatt</h2>
+      <p class="direction-world">DIN Normblatt · каталоги Крауэла · транзитные мануалы Вигнелли</p>
+      <p class="direction-lede">Стандартный лист, который можно регулировать. Структуру несут линии 1px, пустота и трекинг — почти ничто не является контейнером. Глубина — плотностный клин печатных чернил, не тень. Потолок кегля 17px: имя клиента набрано 13px, потому что кричать 40px с подсветкой нужно публичному клиенту, а не приватному.</p>
+    </div>
+    <dl class="direction-facts">
+      <div>
+        <dt>Палитра</dt>
+        <dd><span class="swatches"><span style="background:#0E100F" data-hex="0E100F"></span><span style="background:#171A19" data-hex="171A19"></span><span style="background:#262B29" data-hex="262B29"></span><span style="background:#4E5451" data-hex="4E5451"></span><span style="background:#E8E6E1" data-hex="E8E6E1"></span><span style="background:#E3AE2E" data-hex="E3AE2E"></span></span></dd>
+      </div>
+      <div>
+        <dt>Типографика</dt>
+        <dd>Две гарнитуры, не три. Golos Text — рисован под кириллицу в первую очередь, значит русские подписи это расчётный случай. Роль «display» — та же гарнитура размером меньше, чем body.</dd>
+      </div>
+      <div>
+        <dt>Формы и границы</dt>
+        <dd>Радиус 0 без исключений. Единственные обведённые прямоугольники — клавиши, потому что клавиша действительно коробка. Кнопок нет: действия это подписи. Активная плашка цвета получает приводочные метки печатника, а не рамку.</dd>
+      </div>
+      <div>
+        <dt>Подпись направления</dt>
+        <dd>Мерная линия: слайдер — размерная линия с чертежа. Паз 1px, градуировки свисают под ним как гравировка линейки, курсор — волосок нониуса 2×14, и значение едет вместе с ним по шкале.</dd>
+      </div>
+    </dl>
+  </header>
+
+  <div class="stage-frame" data-fit="false">
+    <div class="stage norm" data-stage>
+      <canvas class="world" width="1280" height="720" data-seed="29"></canvas>
+
+      <!-- HUD -->
+      <div class="hud norm-running-head">
+        <span class="mark">Eclipse</span>
+        <span class="spacer"></span>
+        <div><b>FPS</b><i>243</i></div>
+        <div><b>PING</b><i>28</i></div>
+        <div><b>CPS</b><i>11</i></div>
+        <div><b>BPS</b><i>5.42</i></div>
+      </div>
+
+      <div class="hud norm-arraylist">
+        <div>KillAura</div>
+        <div>Velocity</div>
+        <div>AutoTotem</div>
+        <div>Speed</div>
+        <div>Esp</div>
+        <div>NameTags</div>
+      </div>
+
+      <div class="hud norm-target" data-low="false">
+        <header><b>mitsurugi_</b><i>14.5</i></header>
+        <div class="dim">
+          <div class="t"></div><div class="v" style="width:72%"></div>
+          <span class="m" style="left:0"></span><span class="m" style="left:25%"></span><span class="m" style="left:50%"></span><span class="m" style="left:75%"></span><span class="m" style="right:0"></span>
+          <span class="c" style="left:72%"></span>
+        </div>
+        <footer><span>дист<u>2.4</u></span><span>броня<u>61%</u></span><span>нак<u>0.31</u></span></footer>
+      </div>
+
+      <div class="hud norm-potions">
+        <div>Сила II<span class="scale"><div style="width:68%"></div></span><i>1:42</i></div>
+        <div>Скорость II<span class="scale"><div style="width:14%"></div></span><i>0:18</i></div>
+      </div>
+
+      <div class="hud norm-coords">
+        <div><b>X</b><i>−1 842.31</i></div>
+        <div><b>Y</b><i>71.00</i></div>
+        <div><b>Z</b><i>4 066.75</i></div>
+      </div>
+
+      <div class="hud norm-armor">
+        <div data-low="false"><b>шлем</b><div class="col"><s style="height:84%"></s></div><i>84</i></div>
+        <div data-low="false"><b>нагр</b><div class="col"><s style="height:91%"></s></div><i>91</i></div>
+        <div data-low="true"><b>штан</b><div class="col"><s style="height:22%"></s></div><i>22</i></div>
+        <div data-low="false"><b>боты</b><div class="col"><s style="height:67%"></s></div><i>67</i></div>
+      </div>
+
+      <div class="hud norm-keys">
+        <span class="w" data-down="true">W</span>
+        <span class="a">A</span><span class="s" data-down="true">S</span><span class="d">D</span>
+        <span class="wide">ПРБ</span>
+      </div>
+
+      <!-- GUI -->
+      <div class="norm-panel">
+        <div class="norm-header">
+          <span class="norm-mark">Eclipse</span>
+          <div class="norm-search"><b>Поиск</b><span>vel</span><i></i></div>
+        </div>
+
+        <div class="norm-body">
+          <div class="norm-zone-cat">
+            <div class="norm-cat" aria-selected="true"><i>1</i><b>Бой</b></div>
+            <div class="norm-cat"><i>2</i><b>Движ</b></div>
+            <div class="norm-cat"><i>3</i><b>Игрок</b></div>
+            <div class="norm-cat"><i>4</i><b>Отрис</b></div>
+            <div class="norm-cat"><i>5</i><b>Мир</b></div>
+            <div class="norm-cat"><i>6</i><b>Проч</b></div>
+          </div>
+
+          <div class="norm-zone-list">
+            <div class="norm-list-head">1 Бой · 14 модулей</div>
+            <div class="norm-mod" data-state="on" aria-current="true"><i>1.01</i><b>KillAura</b></div>
+            <div class="norm-mod" data-state="on"><i>1.02</i><b>Velocity</b></div>
+            <div class="norm-mod" data-state="on"><i>1.03</i><b>AutoTotem</b></div>
+            <div class="norm-mod" data-state="off"><i>1.04</i><b>Criticals</b></div>
+            <div class="norm-mod" data-state="off"><i>1.05</i><b>HitBox</b></div>
+            <div class="norm-mod" data-state="on"><i>1.06</i><b>AutoSwap</b></div>
+            <div class="norm-mod" data-state="off"><i>1.07</i><b>TriggerBot</b></div>
+            <div class="norm-mod" data-state="off"><i>1.08</i><b>AntiBot</b></div>
+            <div class="norm-mod" data-state="off"><i>1.09</i><b>AutoDodge</b></div>
+            <div class="norm-mod" data-state="off"><i>1.10</i><b>TargetPearl</b></div>
+            <div class="norm-mod" data-state="off"><i>1.11</i><b>ShiftTap</b></div>
+            <div class="norm-mod" data-state="on"><i>1.12</i><b>NoFriendDamage</b></div>
+            <div class="norm-mod" data-state="off"><i>1.13</i><b>AutoArmor</b></div>
+            <div class="norm-mod" data-state="off"><i>1.14</i><b>AutoExplosion</b></div>
+          </div>
+
+          <div class="norm-zone-set">
+            <h3 class="norm-set-title">KillAura</h3>
+            <dl class="norm-spec">
+              <div class="norm-spec-row">
+                <dt>Состояние</dt>
+                <dd><span class="norm-state">Вкл</span></dd>
+              </div>
+              <div class="norm-spec-row">
+                <dt>Клавиша</dt>
+                <dd><span class="norm-keycap">R</span></dd>
+              </div>
+              <div class="norm-spec-row">
+                <dt>Наводка</dt>
+                <dd class="drop"><span>Плавная</span></dd>
+              </div>
+              <div class="norm-spec-row">
+                <dt>Тип таргета</dt>
+                <dd class="drop"><span>Игроки, Друзья</span></dd>
+              </div>
+
+              <div class="norm-section">Дистанция<hr></div>
+
+              <div class="norm-dim" data-pct="58">
+                <span class="label">Удар</span>
+                <div class="track"></div><div class="travelled" style="width:58%"></div>
+                <span class="major" style="left:0"></span><span class="major" style="left:25%"></span><span class="major" style="left:50%"></span><span class="major" style="left:75%"></span><span class="major" style="right:0"></span>
+                <span class="cursor" style="left:58%"></span>
+                <span class="value" style="left:58%">3.40<u>бл</u></span>
+                <span class="edge lo">0</span><span class="edge hi">6</span>
+              </div>
+
+              <div class="norm-dim" data-pct="31" data-dragging="true">
+                <span class="label">Коррекция</span>
+                <div class="track"></div><div class="travelled" style="width:31%"></div>
+                <span class="major" style="left:0"></span><span class="major" style="left:25%"></span><span class="major" style="left:50%"></span><span class="major" style="left:75%"></span><span class="major" style="right:0"></span>
+                <span class="cursor" style="left:31%"></span>
+                <span class="value" style="left:31%">12.4<u>мс</u></span>
+                <span class="edge lo">0</span><span class="edge hi">40</span>
+              </div>
+
+              <div class="norm-section">Отключение<hr></div>
+              <div class="norm-spec-row">
+                <dt>Условия</dt>
+                <dd style="flex-direction:column;align-items:flex-start;gap:5px">
+                  <span class="norm-gate" data-on="true"><s></s><b>Только криты</b></span>
+                  <span class="norm-gate" data-on="false"><s></s><b>Игнорировать стены</b></span>
+                  <span class="norm-gate" data-on="true"><s></s><b>Синхронизировать с ТПС</b></span>
+                </dd>
+              </div>
+              <div class="norm-spec-row">
+                <dt>Цвет трейса</dt>
+                <dd><span class="norm-swatch"></span></dd>
+              </div>
+            </dl>
+          </div>
+        </div>
+
+        <div class="norm-title-block">
+          <div><b>Конфиг</b><i>hvh_2b2t</i></div>
+          <div><b>Рев</b><i>14<em>*</em></i></div>
+          <div><b>Сборка</b><i>1.21.4 · b2471</i></div>
+          <div><b>Активно</b><i>14 / 58</i></div>
+        </div>
+      </div>
+
+      <div class="stage-caption">02 · Normblatt — 1280×720</div>
+    </div>
+  </div>
+</section>
+
+<section class="direction">
+  <header>
+    <div class="direction-index">03</div>
+    <div>
+      <h2 class="direction-title">Ожидается</h2>
+      <p class="direction-world">анодированный алюминий · HHKB · Braun ET66 · Nagra</p>
+      <p class="direction-lede">Третье направление: глубина через вес, краевой свет и настоящую тень — никогда через размытие или подсветку. Поверхности имеют зерно, у рёбер светлый верх и тёмный низ.</p>
+    </div>
+    <dl class="direction-facts"><div><dt>Статус</dt><dd>Генерируется, затем судейская панель по трём линзам.</dd></div></dl>
+  </header>
+  <p class="pending"><span></span>Направление дописывается — страница обновится после его готовности.</p>
+</section>
+
+<script src="world.js"></script>
+<script>
+for (const canvas of document.querySelectorAll('canvas.world')) {
+  renderWorld(canvas, Number(canvas.dataset.seed) || 11);
+}
+
+for (const slider of document.querySelectorAll('.bench-slider')) {
+  const pct = Number(slider.dataset.pct);
+  slider.querySelector('.fill').style.width = pct + '%';
+  slider.querySelector('.cap').style.left = pct + '%';
+}
+
+for (const dim of document.querySelectorAll('.norm-dim')) {
+  const measure = dim.getBoundingClientRect().width;
+  const step = measure / 20;
+  for (let i = 1; i < 20; i++) {
+    if (i % 5 === 0) continue;
+    const tick = document.createElement('span');
+    tick.className = 'minor';
+    tick.style.left = (i * step).toFixed(1) + 'px';
+    dim.appendChild(tick);
+  }
+  const value = dim.querySelector('.value');
+  const pct = Number(dim.dataset.pct);
+  const width = value.getBoundingClientRect().width;
+  value.style.left = Math.min(Math.max(0, (pct / 100) * measure), measure - width).toFixed(1) + 'px';
+
+  if (dim.dataset.dragging === 'true') {
+    const vernier = document.createElement('span');
+    vernier.className = 'vernier';
+    vernier.style.left = ((pct / 100) * measure).toFixed(1) + 'px';
+    for (let i = 0; i < 10; i++) vernier.appendChild(document.createElement('s'));
+    dim.appendChild(vernier);
+  }
+}
+
+for (const canvas of document.querySelectorAll('canvas[data-trace]')) {
+  const context = canvas.getContext('2d');
+  const samples = [];
+  for (let i = 0; i < canvas.width; i += 2) {
+    const base = Math.sin(i * 0.052) * 5 + Math.sin(i * 0.013) * 3.4;
+    const jitter = ((Math.sin(i * 1.73) * 10000) % 1) * 2.6;
+    samples.push(canvas.height / 2 + base + jitter);
+  }
+  context.strokeStyle = '#ECA042';
+  context.lineWidth = 1;
+  context.beginPath();
+  samples.forEach((y, index) => {
+    const x = index * 2 + 0.5;
+    if (index === 0) context.moveTo(x, Math.round(y) + 0.5);
+    else context.lineTo(x, Math.round(y) + 0.5);
+  });
+  context.stroke();
+}
+
+const frames = [...document.querySelectorAll('.stage-frame')];
+const buttons = [...document.querySelectorAll('.sheet-controls button')];
+
+function applyZoom(mode) {
+  for (const button of buttons) button.setAttribute('aria-pressed', String(button.dataset.zoom === mode));
+  for (const frame of frames) {
+    const stage = frame.querySelector('[data-stage]');
+    if (!stage) continue;
+    if (mode === 'fit') {
+      const scale = Math.min(1, frame.parentElement.clientWidth / stage.offsetWidth);
+      frame.dataset.fit = 'true';
+      frame.style.setProperty('--fit-scale', scale);
+      frame.style.height = stage.offsetHeight * scale + 'px';
+    } else {
+      frame.dataset.fit = 'false';
+      frame.style.removeProperty('--fit-scale');
+      frame.style.height = '';
+    }
+  }
+}
+
+for (const button of buttons) button.addEventListener('click', () => applyZoom(button.dataset.zoom));
+</script>
+
+</body>
+</html>
